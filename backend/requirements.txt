@@ -1,0 +1,6 @@
+Flask
+Flask-CORS
+Flask-SQLAlchemy>=3.1.0
+Werkzeug
+python-multipart
+sqlalchemy>=2.0.30
