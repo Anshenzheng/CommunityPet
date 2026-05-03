@@ -54,6 +54,10 @@ const genderMap = {
   female: '母',
 };
 
+const disabledDate = (current) => {
+  return current && current > Date.now();
+};
+
 const AdminPetList = () => {
   const [pets, setPets] = useState([]);
   const [buildings, setBuildings] = useState([]);
@@ -496,6 +500,7 @@ const AdminPetList = () => {
                   style={{ width: '100%' }} 
                   placeholder="请选择出生日期"
                   picker="date"
+                  disabledDate={disabledDate}
                 />
               </Form.Item>
             </Col>
@@ -527,6 +532,7 @@ const AdminPetList = () => {
               style={{ width: '100%' }} 
               placeholder="请选择最近疫苗接种日期"
               picker="date"
+              disabledDate={disabledDate}
             />
           </Form.Item>
 
