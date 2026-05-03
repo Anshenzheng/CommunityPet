@@ -214,7 +214,6 @@ const AddPet = ({ user }) => {
               className="avatar-uploader"
               showUploadList={false}
               beforeUpload={beforeUpload}
-              onChange={handleChange}
             >
               {photoPreview ? (
                 <img 
