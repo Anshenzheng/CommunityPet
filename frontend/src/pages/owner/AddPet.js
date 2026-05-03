@@ -10,11 +10,10 @@ import {
   Card, 
   message,
   Row,
-  Col,
-  Image
+  Col
 } from 'antd';
 import { PlusOutlined, LoadingOutlined } from '@ant-design/icons';
-import { addPet, uploadFile, getImageUrl } from '../../services/api';
+import { addPet, uploadFile } from '../../services/api';
 
 const { TextArea } = Input;
 const { Option } = Select;
@@ -25,18 +24,25 @@ const getBase64 = (img, callback) => {
   reader.readAsDataURL(img);
 };
 
+const disabledDate = (current) => {
+  return current && current > Date.now();
+};
+
 const AddPet = ({ user }) => {
   const navigate = useNavigate();
   const [form] = Form.useForm();
   const [loading, setLoading] = useState(false);
   const [uploading, setUploading] = useState(false);
-  const [photoFile, setPhotoFile] = useState(null);
   const [photoPreview, setPhotoPreview] = useState(null);
   const [uploadedFilename, setUploadedFilename] = useState(null);
 
-  const handleUpload = async (file) => {
+  const handleUploadAndPreview = async (file) => {
     setUploading(true);
     try {
+      getBase64(file, (url) => {
+        setPhotoPreview(url);
+      });
+      
       const response = await uploadFile(file);
       if (response.data.success) {
         setUploadedFilename(response.data.filename);
@@ -52,20 +58,6 @@ const AddPet = ({ user }) => {
     }
   };
 
-  const handleChange = (info) => {
-    if (info.file.status === 'uploading') {
-      setUploading(true);
-      return;
-    }
-    if (info.file.status === 'done') {
-      getBase64(info.file.originFileObj, (url) => {
-        setPhotoPreview(url);
-        setUploading(false);
-      });
-      setPhotoFile(info.file.originFileObj);
-    }
-  };
-
   const beforeUpload = (file) => {
     const isImage = file.type.startsWith('image/');
     if (!isImage) {
@@ -78,10 +70,8 @@ const AddPet = ({ user }) => {
       return false;
     }
     
-    // 立即上传
-    handleUpload(file);
+    handleUploadAndPreview(file);
     
-    // 阻止默认上传行为，我们自己处理
     return false;
   };
 
@@ -200,6 +190,7 @@ const AddPet = ({ user }) => {
                   size="large" 
                   placeholder="请选择出生日期"
                   picker="date"
+                  disabledDate={disabledDate}
                 />
               </Form.Item>
             </Col>
@@ -257,6 +248,7 @@ const AddPet = ({ user }) => {
               size="large" 
               placeholder="请选择最近疫苗接种日期"
               picker="date"
+              disabledDate={disabledDate}
             />
           </Form.Item>
 
